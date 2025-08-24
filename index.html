@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enquête Policière - Prolog Backend</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="status-indicator" id="connectionStatus">
+        <i class="fas fa-wifi"></i>
+        <span>Déconnecté du serveur Prolog</span>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1>Enquête Policière</h1>
+      </div>
+
+        <div class="tab-container">
+            <button class="tab active" data-tab="investigation">
+                <i class="fas fa-search"></i>
+                <span>Enquête</span>
+            </button>
+            <button class="tab" data-tab="suspects">
+                <i class="fas fa-users"></i>
+                <span>Suspects</span>
+            </button>
+            <button class="tab" data-tab="evidence">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Indices</span>
+            </button>
+            <button class="tab" data-tab="reveal">
+                <i class="fas fa-balance-scale"></i>
+                <span>Solution</span>
+            </button>
+        </div>
+
+        <div id="investigation" class="tab-content active">
+            <div class="investigation-panel">
+                <div class="panel">
+                    <div class="panel-header">
+                        <i class="fas fa-user-secret"></i>
+                        <h3>Enquête sur un Suspect</h3>
+                    </div>
+                    <div class="form-group">
+                        <label for="suspect-person">
+                            <i class="fas fa-user"></i>
+                            Personne
+                        </label>
+                        <select id="suspect-person" class="form-control">
+                            <option value="">Choisir une personne...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="suspect-crime">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Crime
+                        </label>
+                        <select id="suspect-crime" class="form-control">
+                            <option value="">Choisir un crime...</option>
+                            <option value="vol">Vol</option>
+                            <option value="assassinat">Assassinat</option>
+                            <option value="escroquerie">Escroquerie</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="investigateSuspect()">
+                        <i class="fas fa-search"></i>
+                        Enquêter
+                    </button>
+                    
+                    <div id="investigation-result" class="result-panel"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <i class="fas fa-gavel"></i>
+                        <h3>Test de Culpabilité Directe</h3>
+                    </div>
+                    <p class="panel-subtitle">
+                        Test rapide du statut final d'une personne
+                    </p>
+                    <div class="form-group">
+                        <label for="quick-person">
+                            <i class="fas fa-user"></i>
+                            Personne
+                        </label>
+                        <select id="quick-person" class="form-control">
+                            <option value="">Choisir une personne...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quick-crime">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Crime
+                        </label>
+                        <select id="quick-crime" class="form-control">
+                            <option value="">Choisir un crime...</option>
+                            <option value="vol">Vol</option>
+                            <option value="assassinat">Assassinat</option>
+                            <option value="escroquerie">Escroquerie</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary" onclick="quickTest()">
+                        <i class="fas fa-bolt"></i>
+                        Test Rapide
+                    </button>
+                    <div class="loading" id="quick-loading">
+                        <div class="spinner"></div>
+                        <p>Test en cours...</p>
+                    </div>
+                    <div id="quick-result" class="result-panel"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="suspects" class="tab-content">
+            <div class="section-header">
+                <i class="fas fa-users"></i>
+                <h2>État des Personnes</h2>
+            </div>
+            <div class="loading" id="persons-loading">
+                <div class="spinner"></div>
+                <p>Chargement des données depuis Prolog...</p>
+            </div>
+            <div id="persons-grid" class="person-grid"></div>
+        </div>
+
+        <div id="evidence" class="tab-content">
+            <div class="section-header">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div class="investigation-panel">
+                <div class="panel">
+                    <div class="panel-header">
+                        <i class="fas fa-user-check"></i>
+                        <h3>Indices par Personne</h3>
+                    </div>
+                    <div class="form-group">
+                        <label for="evidence-person">
+                            <i class="fas fa-user"></i>
+                            Personne
+                        </label>
+                        <select id="evidence-person" class="form-control">
+                            <option value="">Choisir une personne...</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="loadPersonEvidence()">
+                        <i class="fas fa-file-alt"></i>
+                        Charger les Indices
+                    </button>
+                    <div class="loading" id="person-evidence-loading">
+                        <div class="spinner"></div>
+                        <p>Récupération des preuves...</p>
+                    </div>
+                    <div id="person-evidence-result" class="result-panel"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Indices par Crime</h3>
+                    </div>
+                    <div class="form-group">
+                        <label for="evidence-crime">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Crime
+                        </label>
+                        <select id="evidence-crime" class="form-control">
+                            <option value="">Choisir un crime...</option>
+                            <option value="vol">Vol</option>
+                            <option value="assassinat">Assassinat</option>
+                            <option value="escroquerie">Escroquerie</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="loadCrimeEvidence()">
+                        <i class="fas fa-file-alt"></i>
+                        Charger les Indices
+                    </button>
+                    <div class="loading" id="crime-evidence-loading">
+                        <div class="spinner"></div>
+                        <p>Récupération des preuves...</p>
+                    </div>
+                    <div id="crime-evidence-result" class="result-panel"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="reveal" class="tab-content">
+            <div class="final-reveal">
+                <div class="reveal-icon">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <h2>Solution Finale</h2>
+                <p>Révéler la solution complète Prolog</p>
+                <button class="btn btn-reveal" onclick="revealFinalSolution()">
+                    <i class="fas fa-eye"></i>
+                    Révéler la Vérité Complète
+                </button>
+            </div>
+            <div id="final-solution"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
