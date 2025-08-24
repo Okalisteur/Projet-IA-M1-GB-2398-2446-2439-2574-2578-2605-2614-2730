@@ -13,6 +13,7 @@ Avant de pouvoir accéder à l'interface utilisateur, vous devez démarrer l'env
 
 ```bash
 swipl -s enquete.pl
+```
 
 ### 2. Accéder à l'interface
 Il faut lancer l'interface en cliquant sur le fichier `index.html`
